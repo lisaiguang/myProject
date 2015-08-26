@@ -21,4 +21,4 @@ define(function(){
         return (this.point < 13? types[this.type] : '') + points[this.point]
     }
     return Card;
-}, exports);
+}, module);
