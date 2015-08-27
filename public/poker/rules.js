@@ -4,7 +4,6 @@
 define(function(){
     return {
         compare:function(l1,l2){
-
         }
     };
 },module);
