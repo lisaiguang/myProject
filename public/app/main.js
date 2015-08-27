@@ -28,7 +28,6 @@ define(function (require) {
         str+='<br>';
     }
     document.write(str);
-
     function sort(l) {
         for (var i = 0; i < l.length - 1; i++) {
             var f = true;

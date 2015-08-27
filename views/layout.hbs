@@ -3,10 +3,17 @@
   <head>
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+      <script src="lib/require.js"></script>
       <script>
           var module = null;
+          requirejs.config({
+              baseUrl: 'modules',
+              paths: {
+                  app: '../{{main}}'
+              }
+          });
+          requirejs(['{{main}}/main']);
       </script>
-      <script data-main="{{main}}" src="lib/require.js"></script>
   </head>
   <body>
     {{{body}}}
