@@ -3,6 +3,9 @@
 /**
  * Module dependencies.
  */
+global.define = function(fun, module){
+   module.exports = fun();
+}
 
 var app = require('../app');
 var debug = require('debug')('myProject:server');
