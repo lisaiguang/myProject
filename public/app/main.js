@@ -1,5 +1,5 @@
 define(function (require) {
-    var Card = require('Card');
+    var Card = require('app/Card');
     var list = [];
     for (var i = 0; i < 54; i++) {
         list.push(new Card(i < 52 ? i % 13 : i - 39, Math.floor(i / 13)));
@@ -17,7 +17,7 @@ define(function (require) {
         str += cards[i].getString()+',';
     }
     str+='<br>拆牌结果如下：<br>';
-    var logic = require('logic');
+    var logic = require('app/logic');
     var hands = logic.getHand(cards);
     for(var i = 0; i < hands.length; i++){
         var hand = hands[i];
