@@ -7,11 +7,7 @@
 define(function(){
     var types = ['?','?','?','?'];
     var points = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-    function Card(point, type){
-        this.point = point;
-        this.type = type;
-    }
-    Card.prototype.value = function(){
+    function getValue(){
         var val = this.point;
         if(val < 1){
             val += 12;
@@ -20,12 +16,19 @@ define(function(){
         }
         return val;
     }
-    Card.prototype.getString = function(){
+    function compareCard(card){
+        var v1 = this.getValue(), v2 = card.getValue();
+        if(v1==v2)return 0;
+        if(v1 < v2)return -1;
+        if(v1 > v2)return 1;
+    }
+    function toString(){
         return types[this.type] + points[this.point]
     }
-    return {
-        getCard:function(point, type){
-            return new Card(point, type);
-        }
+    return function(card){
+        if(!card.hasOwnProperty('type')||!card.hasOwnProperty('point'))throw new Error('cards: invalid!');
+        card.compareCard = compareCard;
+        card.getValue = getValue;
+        card.toString = toString;
     };
 }, module);

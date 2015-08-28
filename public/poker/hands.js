@@ -2,12 +2,18 @@
  * Created by gapp on 8/27/15.
  */
 define(function(){
-    var list = [
-    ];
-    return {
-        compare:function(l1,l2){
-        },
-        calculate:function(l){
-        }
+    function compareHand(hand){
+        var cards = this;
+    }
+    function getValue(){
+        var cards = this;
+    }
+    function predict(){
+        var cards = this;
+    }
+    return function(cards){
+        cards.compareHand = compareHand;
+        cards.getValue = getValue;
+        cards.predict = predict;
     };
 },module);
