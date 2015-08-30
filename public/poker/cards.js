@@ -16,19 +16,26 @@ define(function(){
         }
         return val;
     }
-    function compareCard(card){
+
+    function compare(card){
         var v1 = this.getValue(), v2 = card.getValue();
         if(v1==v2)return 0;
         if(v1 < v2)return -1;
         if(v1 > v2)return 1;
     }
+
     function toString(){
         return types[this.type] + points[this.point]
     }
-    return function(card){
-        if(!card.hasOwnProperty('type')||!card.hasOwnProperty('point'))throw new Error('cards: invalid!');
-        card.compareCard = compareCard;
+
+    var cards = function(card){
+        card.compare = compare;
         card.getValue = getValue;
         card.toString = toString;
+        return card;
     };
+    cards.getInstance = function(point,type){
+        return this({point:point, type:type});
+    };
+    return cards;
 }, module);
