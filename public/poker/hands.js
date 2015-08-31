@@ -2,7 +2,7 @@
  * Created by gapp on 8/27/15.
  */
 define(function(){
-    var valueTypes = [1/*¸ßÅÆ*/,2/*¶Ô×Ó*/,3/*Á½¶Ó*/,4/*ÈýÌõ*/,5/*Ë³×Ó*/,6/*Í¬»¨*/,7/*ºùÂ«*/,8/*ËÄÌõ*/,9/*Í¬»¨Ë³*/,10/*»Ê¼ÒÍ¬»¨Ë³*/];
+    var valueTypes = [1/*ï¿½ï¿½ï¿½ï¿½*/,2/*ï¿½ï¿½ï¿½ï¿½*/,3/*ï¿½ï¿½ï¿½ï¿½*/,4/*ï¿½ï¿½ï¿½ï¿½*/,5/*Ë³ï¿½ï¿½*/,6/*Í¬ï¿½ï¿½*/,7/*ï¿½ï¿½Â«*/,8/*ï¿½ï¿½ï¿½ï¿½*/,9/*Í¬ï¿½ï¿½Ë³*/,10/*ï¿½Ê¼ï¿½Í¬ï¿½ï¿½Ë³*/];
     function compare(hand){
         var v0 = this.getValue(), v1 = hand.getValue();
         if(v0.type > v1.type) return 1;
@@ -28,7 +28,18 @@ define(function(){
     }
     //private
     function _getFive(sta){
-
+        var kvs = sta.keyValues.concat(), maxKey = sta.maxKey, maxLevel = sta.maxLevel, count = 5, l0 = [];
+        while(maxLevel-- && count){
+            for(var i = maxKey; i >= 0; i--){
+                var vl = kvs[maxKey];
+                if(vl.length == maxLevel){
+                    var l1 = vl.splice(0, Math.max(maxLevel, count));
+                    l0.push(l1);
+                    count -= l1.length;
+                }
+            }
+        }
+        return l0;
     }
     //private
     function _getValue(sta){
@@ -54,20 +65,22 @@ define(function(){
         }
     }
     function getStatistic(){
-        var cards = this, l = [], keys = [], maxKey = -1;
+        var cards = this, l = [], maxKey = -1, maxLevel = 1;
         for(var i = 0; i < cards.length; i++){
             var card = cards[i], v = card.getValue();
             if(l[v]){
-                l[v].push(card);
+                var level = l[v].push(card);
+                if(level > maxLevel){
+                    maxLevel = level;
+                }
             }else{
                 l[v] = [card];
-                keys.push(v);
                 if(v > maxKey){
                     maxKey = v;
                 }
             }
         }
-        return {keyValues:list, keys:keys, maxKey:maxKey};
+        return {keyValues:l, maxLevel:maxLevel, maxKey:maxKey};
     }
     var hands = function(cards){
         cards.compare = compare;
