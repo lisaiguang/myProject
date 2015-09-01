@@ -9,8 +9,41 @@ define(function(){
         if(v0.type == v1.type) return v0.value > v1.value ? 1 : (v0.value == v1.value ? 0 : -1);
         return -1;
     }
-    function getFlush(){
-        var cards = this, diamonds = [], clubs = [], hearts = [], spades = [];
+    function getValue(){
+        var sta = this.getStatistic(), fives = _getFive(sta);
+        if(fives.length >= 3){
+            var cos = _getCardsOfSameType(this);
+            if(cos.length >= 5){
+                var sf = _getMaxStraight(cos);
+                if(sf.length == 5){
+
+                }
+                return;
+            }
+        }
+    }
+    //private
+    function _getMaxStraight(cards){
+        var l1 = [], len = cards.length;
+        for(var i = 0; i < len; i++){
+            var ci = cards[i], l0 = [ci];
+            if(len - i < 5)break;
+            for(var j = i+1; j < len; j++){
+                var cj = cards[j];
+                if(cj.getValue() === ci.getValue() + 1){
+                    l0.push(cj);
+                    ci = cj;
+                    if(l0.length >= 5){
+                        l1 = l0;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    //private
+    function _getCardsOfSameType(cards){
+        var diamonds = [], clubs = [], hearts = [], spades = [];
         for(var i = 0; i < cards.length; i++){
             var card = cards[i];
             if(card.type == 0) diamonds.push(card);
@@ -22,9 +55,6 @@ define(function(){
         if(clubs.length >= 5) return clubs;
         if(hearts.length >= 5) return hearts;
         if(spades.length >= 5) return spades;
-    }
-    function getValue(){
-        var cards = this, sta = this.getStatistic(), keys = sta.keys;
     }
     //private
     function _getFive(sta){
@@ -87,7 +117,6 @@ define(function(){
         cards.getValue = getValue;
         cards.getStatistic = getStatistic;
         cards.sort = sort;
-        cards.getFlush = getFlush;
         return cards;
     };
     hands.getInstance = function() {
