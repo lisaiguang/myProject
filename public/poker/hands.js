@@ -9,13 +9,13 @@ define(function(){
         if(v0.type == v1.type) return v0.value > v1.value ? 1 : (v0.value == v1.value ? 0 : -1);
         return -1;
     }
-    function getValue(){
+    function getValue() {
         var sta = this.getStatistic(), fives = _getFive(sta);
-        if(fives.length >= 3){
-            var cos = _getCardsOfSameType(this);
-            if(cos.length >= 5){
-                var sf = _getMaxStraight(cos);
-                if(sf.length == 5){
+        if (fives.length >= 3) {
+            var sameTypes = _getCardsOfSameType(this);
+            if (cos.length >= 5) {
+                var straight = _getStraight(sameTypes);
+                if (sf.length == 5) {
 
                 }
                 return;
@@ -23,7 +23,7 @@ define(function(){
         }
     }
     //private
-    function _getMaxStraight(cards){
+    function _getStraight(cards){
         var l1 = [], len = cards.length;
         for(var i = 0; i < len; i++){
             var ci = cards[i], l0 = [ci];
@@ -40,6 +40,7 @@ define(function(){
                 }
             }
         }
+        return l1;
     }
     //private
     function _getCardsOfSameType(cards){
@@ -72,22 +73,15 @@ define(function(){
         return l0;
     }
     //private
-    function _getValue(sta){
-        var len = sta.maxKey, kvs = sta.keyValues, point = 0;
-        for(var i = 0; i < len; i++){
-
-        }
-    }
-    function sort(){
-        var l = this;
-        for (var i = 0; i < l.length - 1; i++) {
+    function _sortDesc(l){
+        for (var i = l.length - 1; i > 0; i--) {
             var f = true;
-            for (var j = l.length - 1; j > i; j--) {
-                var jv = l[j].getValue(), j1v = l[j - 1].getValue();
-                if (jv < j1v || (jv == j1v && l[j - 1].type > l[j].type)) {
+            for (var j = 0; j < i; j++) {
+                var jv = l[j].getValue(), j1v = l[j + 1].getValue();
+                if (jv < j1v || (jv == j1v && l[j + 1].type > l[j].type)) {
                     var t = l[j];
-                    l[j] = l[j - 1];
-                    l[j - 1] = t;
+                    l[j] = l[j + 1];
+                    l[j + 1] = t;
                     f = false;
                 }
             }
@@ -116,7 +110,6 @@ define(function(){
         cards.compare = compare;
         cards.getValue = getValue;
         cards.getStatistic = getStatistic;
-        cards.sort = sort;
         return cards;
     };
     hands.getInstance = function() {
