@@ -2,7 +2,7 @@
  * Created by gapp on 8/27/15.
  */
 define(function(){
-    var valueTypes = [1/*����*/,2/*����*/,3/*����*/,4/*����*/,5/*˳��*/,6/*ͬ��*/,7/*��«*/,8/*����*/,9/*ͬ��˳*/,10/*�ʼ�ͬ��˳*/];
+    var valueTypes = [1/*high*/,2/*pair*/,3/*two pairs*/,4/*three*/,5/*straight*/,6/*flush*/,7/*full house*/,8/*four*/,9/*straight flush*/,10];
     function compare(hand){
         var v0 = this.getValue(), v1 = hand.getValue();
         if(v0.type > v1.type) return 1;
@@ -12,15 +12,49 @@ define(function(){
     function getValue() {
         var sta = this.getStatistic(), fives = _getFive(sta);
         if (fives.length >= 3) {
-            var sameTypes = _getCardsOfSameType(this);
-            if (cos.length >= 5) {
+            var sameTypes = _sortDesc(_getCardsOfSameType(this));
+            if (sameTypes.length >= 5) {
                 var straight = _getStraight(sameTypes);
-                if (sf.length == 5) {
-
+                if (straight.length == 5) {
+                    var card0 = straight[0];
+                    return card0.point == 0 ? {type:10,value:_getCardsValue(straight),cards:straight}:{type:9,value:_getCardsValue(straight),cards:straight};
+                }else{
+                    var flush = sameTypes.splice(0,5);
+                    return {type:6,value:_getCardsValue(flush),cards:flush}
                 }
-                return;
+            }else if(fives.length == 5){
+                var cards = _sortDesc(this.concat());
+                var straight1 = _getStraight(cards);
+                if(straight1.length >= 5){
+                    return {type:5, value:_getCardsValue(straight1), cards:straight1}
+                }else{
+                    var highs = cards.splice(0,5);
+                    return {type:1, value:_getCardsValue(highs), cards:highs}
+                }
+            }else{
+                var cards = [];
+                for(var i = 0; i < fives.length; i++){
+                    cards = cards.concat(fives[i]);
+                }
+                if(fives.length == 3){
+                    return {type:fives[0].length==3?4:3,value:_getCardsValue(cards),cards:cards}
+                }else{
+                    return {type:2,value:_getCardsValue(cards),cards:cards}
+                }
             }
+        }else{
+            var l0 = fives[0], l1 = fives[1], l2 = l0.concat(l1);
+            return {type:l0.length == 3 ? 7 : 8 ,value:_getCardsValue(l2), cards:l2}
         }
+    }
+    //private
+    function _getCardsValue(cards) {
+        var len = cards.length, v0 = 0;
+        for(var i = 0; i < len; i++){
+            var card = cards[i], v1 = (card.getValue()+1)/10, base = Math.pow(10,(len-i)*2);
+            v0 += v1 * base;
+        }
+        return v0/10;
     }
     //private
     function _getStraight(cards){
@@ -59,7 +93,7 @@ define(function(){
     }
     //private
     function _getFive(sta){
-        var kvs = sta.keyValues.concat(), maxKey = sta.maxKey, maxLevel = sta.maxLevel, count = 5, l0 = [];
+        var kvs = sta.keyValues, maxKey = sta.maxKey, maxLevel = sta.maxLevel, count = 5, l0 = [];
         while(maxLevel-- && count){
             for(var i = maxKey; i >= 0; i--){
                 var vl = kvs[maxKey];
@@ -87,6 +121,7 @@ define(function(){
             }
             if (f)break;
         }
+        return l;
     }
     function getStatistic(){
         var cards = this, l = [], maxKey = -1, maxLevel = 1;
