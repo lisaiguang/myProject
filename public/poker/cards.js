@@ -5,7 +5,7 @@
  * Created by lenovo on 2014/11/27.
  */
 define(function(){
-    var types = ['?','?','?','?'];
+    var types = ['diamond ','club ','heart ','spade '];
     var points = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
     function getValue(){
         var val = this.point;

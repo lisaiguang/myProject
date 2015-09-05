@@ -3,7 +3,7 @@
  */
 define(function(){
     var valueTypes = [1/*high*/,2/*pair*/,3/*two pairs*/,4/*three*/,5/*straight*/,6/*flush*/,7/*full house*/,8/*four*/,9/*straight flush*/,10];
-    function compare(hand){
+    function compare(hand) {
         var v0 = this.getValue(), v1 = hand.getValue();
         if(v0.type > v1.type) return 1;
         if(v0.type == v1.type) return v0.value > v1.value ? 1 : (v0.value == v1.value ? 0 : -1);
@@ -12,8 +12,9 @@ define(function(){
     function getValue() {
         var sta = this.getStatistic(), fives = _getFive(sta);
         if (fives.length >= 3) {
-            var sameTypes = _sortDesc(_getCardsOfSameType(this));
+            var sameTypes = _getCardsOfSameType(this);
             if (sameTypes.length >= 5) {
+                _sortDesc(sameTypes);
                 var straight = _getStraight(sameTypes);
                 if (straight.length == 5) {
                     var card0 = straight[0];
@@ -61,10 +62,10 @@ define(function(){
         var l1 = [], len = cards.length;
         for(var i = 0; i < len; i++){
             var ci = cards[i], l0 = [ci];
-            if(len - i < 5)break;
+            if(l1.length >= 5 || len - i < 5)break;
             for(var j = i+1; j < len; j++){
                 var cj = cards[j];
-                if(cj.getValue() === ci.getValue() + 1){
+                if(cj.getValue() === ci.getValue() - 1){
                     l0.push(cj);
                     ci = cj;
                     if(l0.length >= 5){
@@ -90,19 +91,22 @@ define(function(){
         if(clubs.length >= 5) return clubs;
         if(hearts.length >= 5) return hearts;
         if(spades.length >= 5) return spades;
+        return [];
     }
     //private
     function _getFive(sta){
-        var kvs = sta.keyValues, maxKey = sta.maxKey, maxLevel = sta.maxLevel, count = 5, l0 = [];
-        while(maxLevel-- && count){
+        var kvs = sta.keyValues, maxKey = sta.maxKey, maxLevel = sta.maxLevel, l0 = [], count = 0;
+        while(maxLevel && count < 5){
             for(var i = maxKey; i >= 0; i--){
-                var vl = kvs[maxKey];
-                if(vl.length == maxLevel){
-                    var l1 = vl.splice(0, Math.max(maxLevel, count));
+                var vl = kvs[i];
+                if(vl && vl.length == maxLevel){
+                    var l1n = Math.min(maxLevel, 5 - l0.length), l1 = vl.splice(0, l1n);
                     l0.push(l1);
-                    count -= l1.length;
+                    count += l1n;
+                    if(count >= 5)break;
                 }
             }
+            maxLevel--;
         }
         return l0;
     }
