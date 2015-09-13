@@ -6,6 +6,7 @@
 global.define = function(fun, module){
    module.exports = fun();
 }
+global.settings = require('../lib/settings/settings');
 
 var app = require('../app');
 var debug = require('debug')('myProject:server');
